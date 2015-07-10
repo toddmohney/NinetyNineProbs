@@ -22,6 +22,9 @@ module Main where
   testMyLast :: [Int] -> Bool
   testMyLast list = myLast (list ++ [123]) == 123
 
+  testMyButLast :: [Int] -> Bool
+  testMyButLast list = myButLast (list ++ [123, 456]) == 123
+
   tests :: TestTree
   tests = testGroup "Tests" [properties, unitTests]
 
@@ -32,6 +35,7 @@ module Main where
     [ QC.testProperty "sort == sort . reverse" $ testSort
     , QC.testProperty "Fermat's little theorem" $ testFermat
     , QC.testProperty "MyLast" $ testMyLast
+    , QC.testProperty "MyLast" $ testMyButLast
     ]
 
   unitTests = testGroup "Unit tests"
