@@ -16,6 +16,12 @@ module Main where
   testFermat :: Integer -> Bool
   testFermat x = ((x :: Integer)^7 - x) `mod` 7 == 0
 
+  {- Not a complete test -}
+  {- We are not testing the empty list here -}
+  {- myLast, however cannot handle an empty list anyway -}
+  testMyLast :: [Int] -> Bool
+  testMyLast list = myLast (list ++ [123]) == 123
+
   tests :: TestTree
   tests = testGroup "Tests" [properties, unitTests]
 
@@ -25,6 +31,7 @@ module Main where
   qcProps = testGroup "(checked by QuickCheck)"
     [ QC.testProperty "sort == sort . reverse" $ testSort
     , QC.testProperty "Fermat's little theorem" $ testFermat
+    , QC.testProperty "MyLast" $ testMyLast
     ]
 
   unitTests = testGroup "Unit tests"
