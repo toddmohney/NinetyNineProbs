@@ -25,6 +25,15 @@ module Main where
   testMyButLast :: [Int] -> Bool
   testMyButLast list = myButLast (list ++ [123, 456]) == 123
 
+  {- testElementAt :: Int -> Bool -}
+  {- testElementAt index = (elementAt [1..1000] index) == index -}
+
+  testMyLength :: [Int] -> Bool
+  testMyLength list = (myLength list) == (length list)
+
+  testMyReverse :: [Int] -> Bool
+  testMyReverse list = (myReverse list) == (reverse list)
+
   tests :: TestTree
   tests = testGroup "Tests" [properties, unitTests]
 
@@ -34,8 +43,11 @@ module Main where
   qcProps = testGroup "(checked by QuickCheck)"
     [ QC.testProperty "sort == sort . reverse" $ testSort
     , QC.testProperty "Fermat's little theorem" $ testFermat
-    , QC.testProperty "MyLast" $ testMyLast
-    , QC.testProperty "MyLast" $ testMyButLast
+    , QC.testProperty "myLast" $ testMyLast
+    , QC.testProperty "myButLast" $ testMyButLast
+    {- , QC.testProperty "MyElementAt" $ testElementAt -}
+    , QC.testProperty "myLength" $ testMyLength
+    , QC.testProperty "myReverse" $ testMyReverse
     ]
 
   unitTests = testGroup "Unit tests"
