@@ -85,3 +85,36 @@ module NinetyNineProbs where
   dupli = flip repli 2
 
 
+  data Tree a = Empty
+              | Branch a (Tree a) (Tree a)
+              deriving Show
+
+  leaf :: a -> Tree a
+  leaf a = Branch a Empty Empty
+
+  balTree :: Int -> Tree Char
+  balTree 0 = Empty
+  balTree 1 = insertBalanced Empty (leaf 'x')
+  balTree n = balTree' (leaf 'x') (n-1)
+    where 
+      balTree' :: Tree Char -> Int -> Tree Char
+      balTree' tree n
+        | n > 0 = balTree' (insertBalanced tree (leaf 'x')) (n-1)
+        | otherwise = tree
+
+  insertBalanced :: Tree a -> Tree a -> Tree a
+  insertBalanced Empty node = node
+  insertBalanced (Branch v Empty r) node = Branch v node r
+  insertBalanced (Branch v l Empty) node = Branch v l node
+  insertBalanced (Branch v l r) node
+    | treeDepth l > treeDepth r      = Branch v l (insertBalanced r node) 
+    | otherwise                      = Branch v (insertBalanced l node) r
+
+  treeDepth :: Tree a -> Int
+  treeDepth Empty = 0
+  treeDepth (Branch _ Empty Empty) = 1
+  treeDepth (Branch _ l r)
+    | treeDepth l > treeDepth r = 1 + treeDepth l
+    | otherwise                 = 1 + treeDepth r
+
+
