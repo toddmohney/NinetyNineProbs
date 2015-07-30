@@ -66,11 +66,22 @@ module NinetyNineProbs where
 
 
   decodeModified :: [RunLength Char] -> String
-  decodeModified [] = ""
-  decodeModified [x] = decompress x
+  decodeModified []     = ""
+  decodeModified [x]    = decompress x
   decodeModified (x:xs) = decompress x ++ decodeModified xs
+
 
   decompress :: RunLength Char -> String
   decompress (Single a) = [a]
-  decompress (Multiple n e) = take n [e,e..]
+  decompress (Multiple n e) = repli [e] n
+
+
+  repli :: (Enum a) => [a] -> Int -> [a]
+  repli [] _     = []
+  repli [x] c    = take c [x,x..]
+  repli (x:xs) c = repli [x] c ++ repli xs c
+
+  dupli :: (Enum a) => [a] -> [a]
+  dupli = flip repli 2
+
 
