@@ -51,3 +51,16 @@ module NinetyNineProbs where
     where 
       encode' :: [a] -> (Int,a)
       encode' xs = (length xs, head xs)
+
+
+  data RunLength a = Multiple Int a
+                   | Single a
+                   deriving Show
+
+  encodeModified :: (Eq a) => [a] -> [RunLength a]
+  encodeModified list = map buildRunLength (encode list)
+    where 
+      buildRunLength :: (Int,a) -> RunLength a
+      buildRunLength (1,a) = Single a
+      buildRunLength (n,a) = Multiple n a
+
