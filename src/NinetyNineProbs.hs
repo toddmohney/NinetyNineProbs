@@ -8,12 +8,12 @@ module NinetyNineProbs where
 
   myButLast :: [a] -> a
   myButLast []          = error "*** error: myButLast is undefined when the lenght of the list is < 2"
-  myButLast (x:[])      = error "*** error: myButLast is undefined when the lenght of the list is < 2"
+  myButLast [x]      = error "*** error: myButLast is undefined when the lenght of the list is < 2"
   myButLast list@(x:xs) = myLast . take 2 . reverse $ list
 
   elementAt :: [a] -> Int -> a
   elementAt list index
-    | (length list) < index = error "*** error: the index is greater than the lenght of the list"
+    | length list < index = error "*** error: the index is greater than the lenght of the list"
     | otherwise = myLast . take index $ list
 
   myLength :: [a] -> Int
@@ -23,7 +23,7 @@ module NinetyNineProbs where
   myReverse = foldr (\x acc -> acc ++ [x]) []
 
   isPalendrome :: (Eq a) => [a] -> Bool
-  isPalendrome list = list == (myReverse list)
+  isPalendrome list = list == myReverse list
 
   data NestedList a = Elem a 
                     | List [NestedList a]
@@ -35,19 +35,19 @@ module NinetyNineProbs where
 
   compress :: (Eq a) => [a] -> [a]
   compress [] = []
-  compress (x:[]) = [x]
+  compress [x] = [x]
   compress (x:y:xs) 
     | x == y    = compress (y:xs)
-    | otherwise = [x] ++ compress (y:xs)
+    | otherwise = x : compress (y:xs)
 
   pack :: (Eq a) => [a] -> [[a]]
   pack [] = []
   pack (x:xs) = let (grouped, rest) = span (==x) xs in
-                    (x:grouped):(pack rest)
+                    (x:grouped) : pack rest
 
   encode :: (Eq a) => [a] -> [(Int,a)]
   encode [] = []
   encode list@(x:xs) = map encode' $ pack list
     where 
       encode' :: [a] -> (Int,a)
-      encode' xs = ((length xs), (head xs))
+      encode' xs = (length xs, head xs)
