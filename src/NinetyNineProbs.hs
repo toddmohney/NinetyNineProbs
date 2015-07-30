@@ -45,22 +45,32 @@ module NinetyNineProbs where
   pack (x:xs) = let (grouped, rest) = span (==x) xs in
                     (x:grouped) : pack rest
 
-  encode :: (Eq a) => [a] -> [(Int,a)]
+  encode :: String -> [(Int,Char)]
   encode [] = []
   encode list@(x:xs) = map encode' $ pack list
     where 
-      encode' :: [a] -> (Int,a)
+      encode' :: String -> (Int,Char)
       encode' xs = (length xs, head xs)
 
 
-  data RunLength a = Multiple Int a
-                   | Single a
+  data RunLength a = Multiple Int Char
+                   | Single Char
                    deriving Show
 
-  encodeModified :: (Eq a) => [a] -> [RunLength a]
+  encodeModified :: String -> [RunLength Char]
   encodeModified list = map buildRunLength (encode list)
     where 
-      buildRunLength :: (Int,a) -> RunLength a
+      buildRunLength :: (Int,Char) -> RunLength Char
       buildRunLength (1,a) = Single a
       buildRunLength (n,a) = Multiple n a
+
+
+  decodeModified :: [RunLength Char] -> String
+  decodeModified [] = ""
+  decodeModified [x] = decompress x
+  decodeModified (x:xs) = decompress x ++ decodeModified xs
+
+  decompress :: RunLength Char -> String
+  decompress (Single a) = [a]
+  decompress (Multiple n e) = take n [e,e..]
 
