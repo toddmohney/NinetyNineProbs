@@ -128,3 +128,15 @@ module NinetyNineProbs where
   mirror (Branch _ a b) (Branch _ c d) = mirror a d && mirror b c
   mirror _ _                           = False
 
+  -- constructs a binary tree
+  construct :: (Ord a) => [a] -> Tree a
+  construct []   = Empty
+  construct list = foldl (flip add) Empty list
+
+  add :: (Ord a) => a -> Tree a -> Tree a
+  add x Empty = leaf x
+  add x (Branch v l r)
+    | x < v     = Branch v (add x l) r
+    | otherwise = Branch v l (add x r)
+
+
