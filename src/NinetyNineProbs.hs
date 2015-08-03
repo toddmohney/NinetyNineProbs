@@ -102,6 +102,7 @@ module NinetyNineProbs where
         | n > 0 = balTree' (insertBalanced tree (leaf 'x')) (n-1)
         | otherwise = tree
 
+  -- fix this.
   insertBalanced :: Tree a -> Tree a -> Tree a
   insertBalanced Empty node = node
   insertBalanced (Branch v Empty r) node = Branch v node r
@@ -117,4 +118,13 @@ module NinetyNineProbs where
     | treeDepth l > treeDepth r = 1 + treeDepth l
     | otherwise                 = 1 + treeDepth r
 
+
+  symmetric :: Tree a -> Bool
+  symmetric Empty = True
+  symmetric (Branch _ a b) = mirror a b
+
+  mirror :: Tree a -> Tree a -> Bool
+  mirror Empty Empty                   = True
+  mirror (Branch _ a b) (Branch _ c d) = mirror a d && mirror b c
+  mirror _ _                           = False
 
