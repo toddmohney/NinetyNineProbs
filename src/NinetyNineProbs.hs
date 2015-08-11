@@ -139,4 +139,14 @@ module NinetyNineProbs where
     | x < v     = Branch v (add x l) r
     | otherwise = Branch v l (add x r)
 
+  countLeaves :: Tree a -> Int
+  countLeaves Empty = 0
+  countLeaves (Branch _ Empty Empty) = 1
+  countLeaves (Branch _ l r) = countLeaves l + countLeaves r
+
+  leaves :: Tree a -> [a]
+  leaves Empty = []
+  leaves (Branch v Empty Empty) = [v]
+  leaves (Branch _ l r) = leaves l ++ leaves r
+
 
