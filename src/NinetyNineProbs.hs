@@ -1,5 +1,6 @@
 module NinetyNineProbs where
   import Data.List
+  import Data.Tree
 
   myLast :: [a] -> a
   myLast []   = error "*** error: myLast is undefined for an empty list"
@@ -85,25 +86,25 @@ module NinetyNineProbs where
   dupli = flip repli 2
 
 
-  data Tree a = Empty
-              | Branch a (Tree a) (Tree a)
+  data BTree a = Empty
+              | Branch a (BTree a) (BTree a)
               deriving Show
 
-  leaf :: a -> Tree a
+  leaf :: a -> BTree a
   leaf a = Branch a Empty Empty
 
-  balTree :: Int -> Tree Char
-  balTree 0 = Empty
-  balTree 1 = insertBalanced Empty (leaf 'x')
-  balTree n = balTree' (leaf 'x') (n-1)
+  balBTree :: Int -> BTree Char
+  balBTree 0 = Empty
+  balBTree 1 = insertBalanced Empty (leaf 'x')
+  balBTree n = balBTree' (leaf 'x') (n-1)
     where 
-      balTree' :: Tree Char -> Int -> Tree Char
-      balTree' tree n
-        | n > 0 = balTree' (insertBalanced tree (leaf 'x')) (n-1)
+      balBTree' :: BTree Char -> Int -> BTree Char
+      balBTree' tree n
+        | n > 0 = balBTree' (insertBalanced tree (leaf 'x')) (n-1)
         | otherwise = tree
 
   -- fix this.
-  insertBalanced :: Tree a -> Tree a -> Tree a
+  insertBalanced :: BTree a -> BTree a -> BTree a
   insertBalanced Empty node = node
   insertBalanced (Branch v Empty r) node = Branch v node r
   insertBalanced (Branch v l Empty) node = Branch v l node
@@ -111,7 +112,7 @@ module NinetyNineProbs where
     | treeDepth l > treeDepth r      = Branch v l (insertBalanced r node) 
     | otherwise                      = Branch v (insertBalanced l node) r
 
-  treeDepth :: Tree a -> Int
+  treeDepth :: BTree a -> Int
   treeDepth Empty = 0
   treeDepth (Branch _ Empty Empty) = 1
   treeDepth (Branch _ l r)
@@ -119,53 +120,53 @@ module NinetyNineProbs where
     | otherwise                 = 1 + treeDepth r
 
 
-  symmetric :: Tree a -> Bool
+  symmetric :: BTree a -> Bool
   symmetric Empty = True
   symmetric (Branch _ a b) = mirror a b
 
-  mirror :: Tree a -> Tree a -> Bool
+  mirror :: BTree a -> BTree a -> Bool
   mirror Empty Empty                   = True
   mirror (Branch _ a b) (Branch _ c d) = mirror a d && mirror b c
   mirror _ _                           = False
 
   -- constructs a binary tree
-  construct :: (Ord a) => [a] -> Tree a
+  construct :: (Ord a) => [a] -> BTree a
   construct []   = Empty
   construct list = foldl (flip add) Empty list
 
-  add :: (Ord a) => a -> Tree a -> Tree a
+  add :: (Ord a) => a -> BTree a -> BTree a
   add x Empty = leaf x
   add x (Branch v l r)
     | x < v     = Branch v (add x l) r
     | otherwise = Branch v l (add x r)
 
-  countLeaves :: Tree a -> Int
+  countLeaves :: BTree a -> Int
   countLeaves Empty = 0
   countLeaves (Branch _ Empty Empty) = 1
   countLeaves (Branch _ l r) = countLeaves l + countLeaves r
 
-  leaves :: Tree a -> [a]
+  leaves :: BTree a -> [a]
   leaves Empty = []
   leaves (Branch v Empty Empty) = [v]
   leaves (Branch _ l r) = leaves l ++ leaves r
 
-  internals :: Tree a -> [a]
+  internals :: BTree a -> [a]
   internals Empty = []
   internals (Branch v Empty Empty) = []
   internals (Branch v l r) = [v] ++ internals l ++ internals r
 
-  atLevel :: Tree a -> Int -> [a]
+  atLevel :: BTree a -> Int -> [a]
   atLevel Empty _ = []
   atLevel (Branch v l r) level
     | level == 1 = [v]
     | level > 1 = atLevel l (level-1) ++ atLevel r (level-1)
     | otherwise = []
 
-  isCompleteBinaryTree :: Tree a -> Bool
-  isCompleteBinaryTree Empty = False
-  isCompleteBinaryTree (Branch _ Branch{} Empty ) = False
-  isCompleteBinaryTree (Branch _ Empty Branch{}) = False
-  isCompleteBinaryTree (Branch _ Empty Empty) = True
-  isCompleteBinaryTree (Branch _ l@Branch{} r@Branch{}) = isCompleteBinaryTree l && isCompleteBinaryTree r
+  isCompleteBinaryBTree :: BTree a -> Bool
+  isCompleteBinaryBTree Empty = False
+  isCompleteBinaryBTree (Branch _ Branch{} Empty ) = False
+  isCompleteBinaryBTree (Branch _ Empty Branch{}) = False
+  isCompleteBinaryBTree (Branch _ Empty Empty) = True
+  isCompleteBinaryBTree (Branch _ l@Branch{} r@Branch{}) = isCompleteBinaryBTree l && isCompleteBinaryBTree r
 
 
