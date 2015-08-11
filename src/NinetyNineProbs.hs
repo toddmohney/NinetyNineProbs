@@ -149,4 +149,23 @@ module NinetyNineProbs where
   leaves (Branch v Empty Empty) = [v]
   leaves (Branch _ l r) = leaves l ++ leaves r
 
+  internals :: Tree a -> [a]
+  internals Empty = []
+  internals (Branch v Empty Empty) = []
+  internals (Branch v l r) = [v] ++ internals l ++ internals r
+
+  atLevel :: Tree a -> Int -> [a]
+  atLevel Empty _ = []
+  atLevel (Branch v l r) level
+    | level == 1 = [v]
+    | level > 1 = atLevel l (level-1) ++ atLevel r (level-1)
+    | otherwise = []
+
+  isCompleteBinaryTree :: Tree a -> Bool
+  isCompleteBinaryTree Empty = False
+  isCompleteBinaryTree (Branch _ Branch{} Empty ) = False
+  isCompleteBinaryTree (Branch _ Empty Branch{}) = False
+  isCompleteBinaryTree (Branch _ Empty Empty) = True
+  isCompleteBinaryTree (Branch _ l@Branch{} r@Branch{}) = isCompleteBinaryTree l && isCompleteBinaryTree r
+
 
